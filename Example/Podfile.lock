@@ -1,0 +1,16 @@
+PODS:
+  - IPaSwiftUIHelper (0.1.0)
+
+DEPENDENCIES:
+  - IPaSwiftUIHelper (from `../`)
+
+EXTERNAL SOURCES:
+  IPaSwiftUIHelper:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  IPaSwiftUIHelper: e5a4f6eb40cc333ab76ac4a77d356ed767451519
+
+PODFILE CHECKSUM: 4d07e6ad07074818375a694390406da51fe3cbbc
+
+COCOAPODS: 1.16.2
