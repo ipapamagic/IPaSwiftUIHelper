@@ -36,7 +36,8 @@ public struct IPaLoadingView<Content:View>: View {
                     }
                 }.padding(self.paddingValue).background(self.bgColor)
                     .cornerRadius(self.cornerRadiusValue).shadow(radius: 3)
-                    .opacity( 0.8).animation(/*@START_MENU_TOKEN@*/.easeIn/*@END_MENU_TOKEN@*/)
+                    .opacity(0.8)
+                    .animation(.easeIn, value: isShowing)
             }
         }
     }
