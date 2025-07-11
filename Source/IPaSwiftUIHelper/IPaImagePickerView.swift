@@ -7,41 +7,70 @@
 
 import SwiftUI
 import UIKit
+
+public enum IPaMediaType: String {
+    case image = "public.image"
+    case movie = "public.movie"
+    case livePhoto = "com.apple.live-photo"
+    
+    public var uti: String {
+        return self.rawValue
+    }
+}
+
 extension View {
     public func pickImage(
         isPresented: Binding<Bool>,
         sourceType: UIImagePickerController.SourceType,
+        mediaTypes: [IPaMediaType] = [.image],
         allowsEditing: Bool = false,
         onPickImage: ((UIImage) -> Void)? = nil,
         onPickMediaInfo:  (([UIImagePickerController.InfoKey : Any]) -> Void)? = nil) -> some View {
             Group {
                 if sourceType == .photoLibrary {
                     self.sheet(isPresented: isPresented) {
-                        self.showPicker(isPresented: isPresented, sourceType: sourceType, allowsEditing: allowsEditing, onPickImage: onPickImage, onPickMediaInfo: onPickMediaInfo)
+                        self.showPicker(
+                            isPresented: isPresented,
+                            sourceType: sourceType,
+                            mediaTypes: mediaTypes,
+                            allowsEditing: allowsEditing,
+                            onPickImage: onPickImage,
+                            onPickMediaInfo: onPickMediaInfo
+                        )
                     }
                 }
                 else {
                     self.fullScreenCover(isPresented: isPresented, content: {
-                        self.showPicker(isPresented: isPresented, sourceType: sourceType, allowsEditing: allowsEditing, onPickImage: onPickImage, onPickMediaInfo: onPickMediaInfo).edgesIgnoringSafeArea(.all) 
+                        self.showPicker(
+                            isPresented: isPresented,
+                            sourceType: sourceType,
+                            mediaTypes: mediaTypes,
+                            allowsEditing: allowsEditing,
+                            onPickImage: onPickImage,
+                            onPickMediaInfo: onPickMediaInfo
+                        ).edgesIgnoringSafeArea(.all)
                     })
                 }
             }
-    }
-    private func showPicker(isPresented: Binding<Bool>,sourceType: UIImagePickerController.SourceType,
-                               allowsEditing: Bool,
-                               onPickImage: ((UIImage) -> Void)?,
-                               onPickMediaInfo:  (([UIImagePickerController.InfoKey : Any]) -> Void)?) -> some View {
-        IPaImagePickerView(sourceType: sourceType, allowsEditing: allowsEditing, onPick: {
-            mediaInfo in
-            isPresented.wrappedValue = false
-            if let onPickImage = onPickImage, let image = mediaInfo?[.editedImage] as? UIImage ?? mediaInfo?[.originalImage] as? UIImage {
-                onPickImage(image)
-            }
-            if let onPickMediaInfo = onPickMediaInfo,let mediaInfo = mediaInfo {
-                onPickMediaInfo(mediaInfo)
-            }
-        })
-    }
+        }
+    private func showPicker(
+        isPresented: Binding<Bool>,
+        sourceType: UIImagePickerController.SourceType,
+        mediaTypes: [IPaMediaType] = [.image],
+        allowsEditing: Bool,
+        onPickImage: ((UIImage) -> Void)?,
+        onPickMediaInfo:  (([UIImagePickerController.InfoKey : Any]) -> Void)?) -> some View {
+            IPaImagePickerView(sourceType: sourceType, allowsEditing: allowsEditing, mediaTypes: mediaTypes, onPick: {
+                mediaInfo in
+                isPresented.wrappedValue = false
+                if let onPickImage = onPickImage, let image = mediaInfo?[.editedImage] as? UIImage ?? mediaInfo?[.originalImage] as? UIImage {
+                    onPickImage(image)
+                }
+                if let onPickMediaInfo = onPickMediaInfo,let mediaInfo = mediaInfo {
+                    onPickMediaInfo(mediaInfo)
+                }
+            })
+        }
     
 }
 
@@ -49,6 +78,7 @@ extension View {
 public struct IPaImagePickerView: UIViewControllerRepresentable {
     let sourceType: UIImagePickerController.SourceType
     let allowsEditing: Bool
+    let mediaTypes: [IPaMediaType]
     let onPick: ([UIImagePickerController.InfoKey : Any]?) -> Void
     
     public func makeCoordinator() -> Coordinator {
@@ -59,6 +89,7 @@ public struct IPaImagePickerView: UIViewControllerRepresentable {
         let picker = UIImagePickerController()
         picker.delegate = context.coordinator
         picker.sourceType = sourceType
+        picker.mediaTypes = mediaTypes.map(\.uti)
         picker.allowsEditing = allowsEditing
         picker.modalPresentationStyle = .fullScreen
         return picker
@@ -86,5 +117,5 @@ public struct IPaImagePickerView: UIViewControllerRepresentable {
 }
 
 #Preview {
-    IPaImagePickerView(sourceType: .photoLibrary, allowsEditing: false, onPick: { _ in })
+    IPaImagePickerView(sourceType: .photoLibrary, allowsEditing: false, mediaTypes: [.image], onPick: { _ in })
 }
