@@ -88,48 +88,47 @@ extension View {
             }
         }
     }
-    
-    public func pickVideos(isPresented: Binding<Bool>, selectionLimit: Int = 1, loadInPlace:Bool = true, onStartLoading: (()-> Void)? = nil,onPickVideo: @escaping ([URL]) -> Void) -> some View {
-        return self.pickMedias(isPresented: isPresented, selectionLimit: selectionLimit, mediaTypes: [.videos]) { results in
-            var videoURLs: [URL] = []
-            let group = DispatchGroup()
-            onStartLoading?()
-            for result in results {
-                // 使用 registeredTypeIdentifiers 來找到合適的影片類型
-                let availableTypes = result.itemProvider.registeredTypeIdentifiers
-                let videoType = availableTypes.first { typeIdentifier in
-                    if let utType = UTType(typeIdentifier) {
-                        return utType.conforms(to: .movie)
-                    }
-                    return false
-                }
-                
-                if let videoType = videoType {
-                    group.enter()
-                    if loadInPlace {
-                        result.itemProvider.loadInPlaceFileRepresentation(forTypeIdentifier: videoType) { (url, inPlace, error) in
-                            if let url = url {
-                                videoURLs.append(url)
-                            }
-                            group.leave()
-                        }
-                    }
-                    else {
-                        result.itemProvider.loadFileRepresentation(forTypeIdentifier: videoType) { (url, error) in
-                            if let url = url {
-                                videoURLs.append(url)
-                            }
-                            group.leave()
-                        }
-                    }
-                }
-            }
-            
-            group.notify(queue: .main) {
-                onPickVideo(videoURLs)
-            }
-        }
-    }
+//
+//    public func pickVideos(isPresented: Binding<Bool>, selectionLimit: Int = 1, loadInPlace:Bool = true, onStartLoading: (()-> Void)? = nil,onPickVideo: @escaping ([URL]) -> Void) -> some View {
+//        return self.pickMedias(isPresented: isPresented, selectionLimit: selectionLimit, mediaTypes: [.videos]) { results in
+//            var videoURLs: [URL] = []
+//            let group = DispatchGroup()
+//            onStartLoading?()
+//            for result in results {
+//                let availableTypes = result.itemProvider.registeredTypeIdentifiers
+//                let videoType = availableTypes.first { typeIdentifier in
+//                    if let utType = UTType(typeIdentifier) {
+//                        return utType.conforms(to: .movie)
+//                    }
+//                    return false
+//                }
+//                
+//                if let videoType = videoType {
+//                    group.enter()
+//                    if loadInPlace {
+//                        result.itemProvider.loadInPlaceFileRepresentation(forTypeIdentifier: videoType) { (url, inPlace, error) in
+//                            if let url = url {
+//                                videoURLs.append(url)
+//                            }
+//                            group.leave()
+//                        }
+//                    }
+//                    else {
+//                        result.itemProvider.loadFileRepresentation(forTypeIdentifier: videoType) { (url, error) in
+//                            if let url = url {
+//                                videoURLs.append(url)
+//                            }
+//                            group.leave()
+//                        }
+//                    }
+//                }
+//            }
+//            
+//            group.notify(queue: .main) {
+//                onPickVideo(videoURLs)
+//            }
+//        }
+//    }
     
     
 }
