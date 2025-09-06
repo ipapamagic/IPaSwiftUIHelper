@@ -26,8 +26,5 @@ let package = Package(
             dependencies: [.product(name: "IPaLog", package: "IPaLog"),
                            .product(name: "IPaDownloadManager", package: "IPaDownloadManager")],
             path:"Sources/IPaSwiftUIHelper"),
-        .testTarget(
-            name: "IPaSwiftUIHelperTests",
-            dependencies: ["IPaSwiftUIHelper"]),
     ]
 )

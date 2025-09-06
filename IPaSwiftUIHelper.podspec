@@ -30,7 +30,7 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '15.0'
 
-  s.source_files = 'Source/IPaSwiftUIHelper/**/*'
+  s.source_files = 'Sources/IPaSwiftUIHelper/**/*'
   
   # s.resource_bundles = {
   #   'IPaSwiftUIHelper' => ['IPaSwiftUIHelper/Assets/*.png']
